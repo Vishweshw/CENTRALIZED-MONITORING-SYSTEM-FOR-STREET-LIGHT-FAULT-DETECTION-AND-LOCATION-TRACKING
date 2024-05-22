@@ -1,0 +1,93 @@
+# CENTRALIZED-MONITORING-SYSTEM-FOR-STREET-LIGHT-FAULT-DETECTION-AND-LOCATION-TRACKING
+
+//#include <ESP32.h>;
+#include<WiFi.h>
+#include <WiFiClient.h>;
+#include <ThingSpeak.h>;
+#include "soc/soc.h" #include "soc/rtc_cntl_reg.h" const char* ssid = "Indian Info Tech";
+const char* password = "coolbuddy";
+int val;
+const int buttonPin = 25;
+const int buttonPin1 =26;
+const int buttonPin2 = 27;
+int LEDpin =2;
+int LEDpin1 =15;
+int LEDpin2 =4;
+int buttonState = 0;
+int buttonState1 = 0;
+int buttonState2 = 0;
+WiFiClient client;
+unsigned long myChannelNumber = 2302256; //Your Channel Number (Without Brackets)
+const char * myWriteAPIKey = "E2OLDHZ1S02YMH19"; //Your Write API Key
+void setup()
+{
+Serial.begin(9600);
+WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+pinMode(buttonPin, INPUT_PULLUP);
+pinMode(buttonPin1, INPUT_PULLUP);
+pinMode(buttonPin2, INPUT_PULLUP);
+pinMode(LEDpin,OUTPUT);
+pinMode(LEDpin1,OUTPUT);
+11
+pinMode(LEDpin2,OUTPUT);
+delay(10);
+// Connect to WiFi network
+WiFi.begin(ssid, password);
+ThingSpeak.begin(client);
+}
+void loop()
+{
+buttonState = digitalRead(buttonPin);
+buttonState1 = digitalRead(buttonPin1);
+buttonState2 = digitalRead(buttonPin2);
+// check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+if (buttonState == HIGH) {
+// turn LED on:
+digitalWrite(LEDpin, HIGH);
+ThingSpeak.writeField(myChannelNumber, 1,1, myWriteAPIKey); //Update in ThingSpeak
+delay(100);
+Serial.println("IR Detected1"); //Print on Serial Monitor
+}
+else {
+// turn LED off:
+digitalWrite(LEDpin, LOW);
+Serial.println("Idle1"); //Print on Serial Monitor
+//ThingSpeak.writeField(myChannelNumber, 2, IRval, myWriteAPIKey); //Update Field1 in
+ThingSpeak
+ThingSpeak.writeField(myChannelNumber, 1, 0, myWriteAPIKey);
+delay(100);
+}
+if (buttonState1 == HIGH) {
+// turn LED on:
+digitalWrite(LEDpin1, HIGH);
+12
+ThingSpeak.writeField(myChannelNumber, 2,1, myWriteAPIKey); //Update in ThingSpeak
+delay(100);
+Serial.println("IR Detected2"); //Print on Serial Monitor
+}
+else {
+// turn LED off:
+digitalWrite(LEDpin1, LOW);
+Serial.println("Idle2"); //Print on Serial Monitor
+//ThingSpeak.writeField(myChannelNumber, 2, IRval, myWriteAPIKey); //Update Field1 in
+ThingSpeak
+ThingSpeak.writeField(myChannelNumber, 2, 0, myWriteAPIKey);
+delay(100);
+}
+if (buttonState2 == HIGH) {
+// turn LED on:
+digitalWrite(LEDpin2, HIGH);
+ThingSpeak.writeField(myChannelNumber, 3,1, myWriteAPIKey); //Update in ThingSpeak
+delay(100);
+Serial.println("IR Detected3"); //Print on Serial Monitor
+}
+else {
+// turn LED off:
+digitalWrite(LEDpin2, LOW);
+Serial.println("Idle3"); //Print on Serial Monitor
+//ThingSpeak.writeField(myChannelNumber, 2, IRval, myWriteAPIKey); //Update Field1 in
+ThingSpeak
+ThingSpeak.writeField(myChannelNumber, 3, 0, myWriteAPIKey);
+delay(100);
+}
+}
